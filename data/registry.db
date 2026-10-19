@@ -1,0 +1,38 @@
+
+F
+&
+__dummy"
+__dummy_idJfraud_detection
+›ÓÉÖ ğ”—›ÓÉÖ ğ”—
+š
+z
+merchant_category?Merchant category for the transaction (Ex. 'online', 'grocery')"merchant_categoryJfraud_detection
+›ÓÉÖ˜À——›ÓÉÖ˜À——1"$9323c33a-86fd-47fa-87a5-fb13f1bbf3be*¯¡ÒÖğäÊ…2
+±
+merchant_statsfraud_detectionmerchant_category"*
+
+avg_amount"Average Transaction Amount"-
+transaction_count"Number of Transactions"%
+
+fraud_rate"Historical Fraud Rate2€õ$:£event_timestampZ#!../data/merchant_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢merchant_stats_source’­¡ÒÖø±Æ½"­¡ÒÖø±Æ½@R+Aggregated statistics per merchant categoryb
+merchant_category’latestZ
+›ÓÉÖˆé™—¯¡ÒÖˆïÄ…
+Ş¤Ö³„ÒóíÊÖˆªØ
+óíÊÖˆªØ…¼ÓÖÈª«0R°
+­
+,feast.infra.online_stores.sqlite.SqliteTable"}
+[/Users/shreyas/Developer/tutorials/ml_platform_tutorial/feature_repo/..data/online_store.dbfraud_detection_merchant_statsbµevent_timestampZ#!../data/merchant_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢merchant_stats_sourceªfraud_detection’›ÓÉÖÈ¿Ô"›ÓÉÖèä—Š1
+
+fraud_detection
+›ÓÉÖ¨Ÿş›ÓÉÖ¨Ÿş’»
+¸
+merchant_statsfraud_detection"feature_view*Ò
+±
+merchant_statsfraud_detectionmerchant_category"*
+
+avg_amount"Average Transaction Amount"-
+transaction_count"Number of Transactions"%
+
+fraud_rate"Historical Fraud Rate2€õ$:£event_timestampZ#!../data/merchant_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢merchant_stats_source’›ÓÉÖÈ¿Ô"›ÓÉÖèä—@R+Aggregated statistics per merchant categoryb
+merchant_category’latest
+›ÓÉÖˆé™—›ÓÉÖˆé™—2›ÓÉÖØÚ£—B$ebeaa495-036e-49dc-b161-8e8a7c2f7120
