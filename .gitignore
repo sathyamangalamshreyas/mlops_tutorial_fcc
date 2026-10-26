@@ -8,3 +8,12 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Evidently snapshots
+*evidently_workspace*
+
+# ruff cache
+.ruff_cache
+
+# Mlflow db
+mlruns.db
