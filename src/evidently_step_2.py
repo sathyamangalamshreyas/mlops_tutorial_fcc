@@ -1,7 +1,6 @@
 # Import Libraries
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 from evidently import BinaryClassification, DataDefinition, Dataset, Report
 from evidently.metrics import Accuracy, F1Score, Precision, Recall
@@ -101,46 +100,16 @@ def metric_values(snapshot) -> dict:
     }
 
 
-def generate_adapted_fraud(n_samples=10000, fraud_ratio=0.02, seed=42) -> pd.DataFrame:
-    """
-    Concept drift: legit traffic unchanged
-    fraudsters switch to smaller amounts
-    daytime hours and everyday merchants
-    """
-    np.random.seed(seed)
-    cats = ["grocery", "restaurant", "retail", "online", "travel"]
-    n_fraud = int(n_samples * fraud_ratio)
-    n_legit = n_samples - n_fraud
-    legit = pd.DataFrame(
-        {
-            "amount": np.random.lognormal(3.5, 1.2, n_legit),
-            "hour": np.random.randint(0, 24, n_legit),
-            "day_of_week": np.random.randint(0, 7, n_legit),
-            "merchant_category": np.random.choice(
-                cats, n_legit, p=[0.30, 0.25, 0.25, 0.15, 0.05]
-            ),
-            "is_fraud": 0,
-        }
-    )
-    fraud = pd.DataFrame(
-        {
-            "amount": np.random.lognormal(4.0, 1.2, n_fraud),
-            "hour": np.random.randint(8, 22, n_fraud),
-            "day_of_week": np.random.randint(0, 7, n_fraud),
-            "merchant_category": np.random.choice(
-                cats, n_fraud, p=[0.25, 0.25, 0.25, 0.15, 0.10]
-            ),
-            "is_fraud": 1,
-        }
-    )
-    return (
-        pd.concat(
-            objs=[legit, fraud],
-            ignore_index=True,
-        )
-        .sample(frac=1, random_state=seed)
-        .reset_index(drop=True)
-    )
+def make_adapted_fraud(batch: pd.DataFrame, seed: int = 7) -> pd.DataFrame:
+    """Concept drift that is independent of how the data was generated:
+    legitimate rows are untouched; every fraud row gets the amount, hour and merchant
+    of a randomly chosen legitimate row from the same batch (fraud now looks legitimate)."""
+    out = batch.copy()
+    fraud = out["is_fraud"] == 1
+    donors = out[~fraud].sample(n=int(fraud.sum()), replace=True, random_state=seed)
+    for col in ["amount", "hour", "merchant_category"]:
+        out.loc[fraud, col] = donors[col].values
+    return out
 
 
 if __name__ == "__main__":
@@ -148,7 +117,11 @@ if __name__ == "__main__":
     clean_df = add_predictions(
         generate_transactions(n_samples=10000, fraud_ratio=0.02, seed=101)
     )
-    adapted_df = add_predictions(generate_adapted_fraud())
+    adapted_df = add_predictions(
+        make_adapted_fraud(
+            generate_transactions(n_samples=10000, fraud_ratio=0.02, seed=202)
+        )
+    )
     reference = to_dataset(reference_df)
 
     for name, df in [("clean", clean_df), ("adapted", adapted_df)]:
@@ -176,3 +149,40 @@ if __name__ == "__main__":
         Dataset.from_pandas(data=reference_df[cols], data_definition=drift_schema),
     )
     print("\nadapted batch, DRIFT gate passed:", summarize_tests(drift)["passed"])
+
+#     def drift_check(df, reference_df):
+#         cols = NUMERIC + CATEGORICAL
+#         schema = DataDefinition(
+#             numerical_columns=NUMERIC, categorical_columns=CATEGORICAL
+#         )
+#         snap = Report(
+#             [
+#                 DataDriftPreset(
+#                     drift_share=0.25,
+#                     num_method="wasserstein",
+#                     cat_method="jensenshannon",
+#                 )
+#             ],
+#             include_tests=True,
+#         ).run(
+#             Dataset.from_pandas(df[cols], data_definition=schema),
+#             Dataset.from_pandas(reference_df[cols], data_definition=schema),
+#         )
+#         scores = {
+#             m["config"]["column"]: round(m["value"], 3)
+#             for m in snap.dict()["metrics"]
+#             if "column" in m["config"]
+#         }
+#         return summarize_tests(snap)["passed"], scores
+#
+#     print(
+#         "reference rows:",
+#         len(reference_df),
+#         "| frauds:",
+#         int(reference_df.is_fraud.sum()),
+#         "| amount std:",
+#         round(reference_df.amount.std(), 1),
+#     )
+#     for name, df in [("clean", clean_df), ("adapted", adapted_df)]:
+#         passed, scores = drift_check(df, reference_df)
+#         print(f"{name:8s} drift gate passed={passed}  scores={scores}")
