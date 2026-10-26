@@ -76,11 +76,11 @@ Tracking layer: Uses MLflow tooling for experiment tracking.
 Validation layer: Uses Pandera and Pydantic to help catch invalid data.
 Serving layer: Provides the dependencies needed to develop model APIs.
 Monitoring layer: Uses Evidently to assess data or model quality.
+
 📁 Repository Structure
 
 The following tree summarizes the main directories and files currently present in the repository.
 
-text
 mlops_tutorial_fcc/
 │
 ├── 📂 data/                # Data assets
