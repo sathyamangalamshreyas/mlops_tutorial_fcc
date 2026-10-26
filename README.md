@@ -77,3 +77,300 @@ flowchart TD
     G --> H["🚀 API / Model Serving"]
     H --> I["📈 Monitoring"]
     I --> J["🔄 Feedback and Improvement"]
+```
+The diagram illustrates the intended MLOps workflow; the exact execution sequence depends on the implementation of the individual modules.
+
+🔍 Core Components
+
+    Data layer: Stores datasets and supports data preparation.
+
+    Feature layer: Organizes reusable features through Feast.
+
+    Model layer: Contains model artifacts and supports machine learning workflows.
+
+    Tracking layer: Uses MLflow tooling for experiment tracking.
+
+    Validation layer: Uses Pandera and Pydantic to help catch invalid data.
+
+    Serving layer: Provides the dependencies needed to develop model APIs.
+
+    Monitoring layer: Uses Evidently to assess data or model quality.
+
+📁 Repository Structure
+
+The following tree summarizes the main directories and files currently present in the repository.
+Plaintext
+
+mlops_tutorial_fcc/
+│
+├── 📂 data/                 # Data assets
+├── 📂 feature_repo/         # Feature store configuration and assets
+├── 📂 mlruns/1/             # MLflow-related tracking artifacts
+├── 📂 models/               # Model artifacts
+├── 📂 reports/              # Reports and analysis outputs
+├── 📂 src/                  # Source code
+│
+├── 📄 .gitignore            # Git ignore rules
+├── 📄 .python-version       # Python version configuration
+├── 📄 LICENSE               # Project license
+├── 📄 README.md             # Project documentation
+├── 📄 mlruns.db             # Local tracking database
+├── 📄 pyproject.toml        # Project metadata and dependencies
+└── 📄 uv.lock               # Locked dependency versions
+
+⚙️ Getting Started
+Prerequisites
+
+Install the following before getting started:
+
+    Python 3.12 or newer
+
+    Git
+
+    uv for Python project and dependency management
+
+1. Clone the repository
+Bash
+
+git clone [https://github.com/sathyamangalamshreyas/mlops_tutorial_fcc.git](https://github.com/sathyamangalamshreyas/mlops_tutorial_fcc.git)
+cd mlops_tutorial_fcc
+
+2. Install uv
+
+If uv is not already installed, follow the official installation instructions. Verify your installation:
+Bash
+
+uv --version
+python --version
+
+3. Create the environment and install dependencies
+
+The project includes both pyproject.toml and uv.lock.
+Bash
+
+uv sync
+
+This command creates or updates the project's virtual environment and installs the declared dependencies.
+
+Activate the environment if you want to work directly inside it:
+
+    macOS / Linux:
+    Bash
+
+    source .venv/bin/activate
+
+    Windows PowerShell:
+    PowerShell
+
+    .venv\Scripts\Activate.ps1
+
+(You can also run project commands with uv run without manually activating the environment.)
+4. Verify the installation
+
+Check that the Python environment can import the core dependencies:
+Bash
+
+uv run python -c "import pandas, sklearn, mlflow, feast, evidently; print('Environment ready!')"
+
+🧪 Testing
+
+The project declares Pytest and pytest-cov as dependencies.
+
+Run the test suite from the repository root:
+Bash
+
+uv run pytest
+
+To generate a coverage report:
+Bash
+
+uv run pytest --cov=src --cov-report=term-missing
+
+To generate an HTML coverage report:
+Bash
+
+uv run pytest --cov=src --cov-report=html
+
+(The HTML report is written to htmlcov/ by default.)
+📊 MLflow Experiment Tracking
+
+MLflow provides tooling for recording model experiments, metrics, parameters, and artifacts.
+
+To launch the MLflow tracking UI for a conventional local file-based tracking directory, run:
+Bash
+
+uv run mlflow ui --backend-store-uri ./mlruns
+
+Then open http://127.0.0.1:5000 in your browser.
+
+    Important: The repository also contains mlruns.db. Confirm the tracking URI and backend configuration used by your implementation before selecting a tracking-store command. The example above uses ./mlruns and may not display runs stored in a separate database.
+
+🗃️ Feature Management with Feast
+
+Feast helps manage and serve features used by machine learning models. The repository includes a feature_repo/ directory for feature-store-related assets.
+
+A typical Feast workflow includes:
+
+    Define entities, feature views, and data sources.
+
+    Configure the feature store.
+
+    Apply feature definitions.
+
+    Retrieve features for training or inference.
+
+    Keep training and serving features consistent.
+
+To use Feast commands, first navigate to the directory containing the feature-store configuration:
+Bash
+
+cd feature_repo
+uv run feast --help
+
+🛡️ Data Validation and Monitoring
+Pandera and Pydantic
+
+Data validation helps catch invalid records, missing fields, unexpected data types, and schema violations before they affect downstream model workflows.
+
+    Pandera: DataFrame and tabular data validation.
+
+    Pydantic: Python data models and structured input validation.
+
+    FastAPI integration: Request and response validation for APIs.
+
+Evidently
+
+Evidently provides tools for evaluating data quality and monitoring data or model behavior. Monitoring workflows can help identify:
+
+    Missing or invalid values.
+
+    Changes in feature distributions.
+
+    Data drift between reference and current datasets.
+
+    Changes in model quality when suitable ground-truth data is available.
+
+🚀 API Development
+
+FastAPI and Uvicorn are included as dependencies for building API-based applications. A typical model-serving workflow involves:
+
+    Load a validated model artifact.
+
+    Define request and response schemas.
+
+    Validate incoming data.
+
+    Generate predictions.
+
+    Return structured responses.
+
+    Record relevant metrics and monitor input data.
+
+To launch the application, identify the FastAPI application object in src/ and use its actual Python module path. For example, if the application object is named app in src/main.py:
+Bash
+
+uv run uvicorn src.main:app --reload
+
+🔄 Continuous Integration and Automation
+
+GitHub Actions can automate tasks such as:
+
+    Installing project dependencies.
+
+    Running unit and integration tests.
+
+    Checking data and model validation logic.
+
+    Measuring test coverage.
+
+    Running quality checks before changes are merged.
+
+🔐 Best Practices
+
+    📌 Keep dependencies reproducible with uv.lock.
+
+    🧪 Test data-processing and prediction logic.
+
+    🛡️ Validate data before training and inference.
+
+    🗃️ Version feature definitions and model artifacts.
+
+    📊 Track experiment parameters, metrics, and model versions.
+
+    🔍 Monitor data quality and detect unexpected distribution changes.
+
+    🔑 Keep credentials and secrets out of source control.
+
+    📦 Avoid committing large generated artifacts unless required by the project.
+
+    🔄 Automate repeatable checks with CI/CD.
+
+🗺️ Suggested Learning Path
+
+If you're using this repository to learn MLOps, follow this progression:
+
+    Data engineering: Understand how datasets are organized and processed.
+
+    Data contracts: Add schema and data-quality validation.
+
+    Feature engineering: Explore feature definitions and Feast.
+
+    Model development: Train and evaluate a scikit-learn model.
+
+    Experiment tracking: Record runs and compare model metrics with MLflow.
+
+    Model serving: Expose predictions through a FastAPI application.
+
+    Monitoring: Use Evidently to investigate data quality and drift.
+
+    Automation: Run tests and quality checks in a repeatable pipeline.
+
+🤝 Contributing
+
+Contributions, improvements, and suggestions are welcome!
+
+    Fork the repository.
+
+    Create a feature branch:
+    Bash
+
+    git checkout -b feature/your-feature
+
+    Make your changes and add appropriate tests.
+
+    Run the test suite:
+    Bash
+
+    uv run pytest
+
+    Commit and push your changes:
+    Bash
+
+    git add .
+    git commit -m "Describe your changes"
+    git push origin feature/your-feature
+
+    Open a pull request describing your changes.
+
+📄 License
+
+This project includes an MIT license. See LICENSE for the full license text.
+🔗 Resources
+
+    🐍 Python
+
+    📦 uv documentation
+
+    🗃️ Feast documentation
+
+    🧪 MLflow documentation
+
+    📈 Evidently documentation
+
+    🛡️ Pandera documentation
+
+    🚀 FastAPI documentation
+
+    🧫 Pytest documentation
+
+    ⚙️ GitHub Actions documentation
