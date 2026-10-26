@@ -29,15 +29,6 @@ model = loaded_data["model"]
 encoder = loaded_data["encoder"]
 feature_cols = loaded_data["feature_cols"]
 
-# Temporary Diagnostic
-print("Encoder:", type(encoder).__name__)
-print("Saved feature names:", feature_cols)
-print("Encoder output columns:", encoder.get_feature_names_out())
-print(
-    "Model feature names:",
-    getattr(model, "feature_names_in_", None),
-)
-
 # Instantiate FastAPI app
 app = FastAPI(
     title="Fraud Detection API (Validated)",
