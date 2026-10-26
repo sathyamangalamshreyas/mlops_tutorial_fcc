@@ -17,7 +17,7 @@
 
 ## 📌 Overview
 
-**MLOps Tutorial FCC** is a hands-on machine learning engineering project focused on the tools and practices used to build, manage, validate, and monitor machine learning systems.
+**MLOps Tutorial** by FreeCodeCamp (https://www.freecodecamp.org/news/build-end-to-end-ml-platform-locally-from-experiment-tracking-to-cicd/) is a hands-on machine learning engineering project focused on the tools and practices used to build, manage, validate, and monitor machine learning systems.
 
 The project brings together data processing, feature management, model development, experiment tracking, data validation, and API-related tooling to demonstrate the building blocks of an end-to-end MLOps platform.
 
